@@ -1,5 +1,6 @@
 package com.fellipegarcias.aula270.resources;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,15 @@ public class PostResource {
 	public ResponseEntity<List<Post>> findTitle(@RequestParam(value="text", defaultValue="") String text) {
 		String textDecoded = URL.decodeParam(text);
 		return ResponseEntity.ok().body(service.findByTitle(textDecoded));
+	}
+	
+	@RequestMapping(value="/fullsearch", method=RequestMethod.GET)
+	public ResponseEntity<List<Post>> fullSearch(
+			@RequestParam(value="text", defaultValue="") String text,
+			@RequestParam(value="minDate", defaultValue="") String minDate,
+			@RequestParam(value="maxDate", defaultValue="") String maxDate) {
+		Date dateMin = URL.convertDate(minDate, new Date(0L));
+		Date dateMax = URL.convertDate(maxDate, new Date());
+		return ResponseEntity.ok().body(service.fullSearch(text, dateMin, dateMax));
 	}
 }
